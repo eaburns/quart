@@ -88,8 +88,7 @@ func mainLoop() {
 		case <-tick.C:
 			if !stopped {
 				start := circle.Center
-				circle = phys.MoveCircle(circle, vel, sides)
-				circle = phys.MoveCircle(circle, Vector{0, gravity}, sides)
+				circle = phys.MoveCircle(circle, vel.Plus(Vector{0, gravity}), sides)
 				dist := start.Minus(circle.Center).Magnitude()
 				stopped = vel.Equals(Vector{}) && dist < stopThreshold
 			}
