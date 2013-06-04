@@ -28,7 +28,7 @@ func (a Line) LineIntersection(b Line) (Point, bool) {
 
 // Normal returns the normal vector of the side.
 func (s Side) Normal() Vector {
-	n := s[0].Minus(s[1]).Unit()
+	n := s[1].Minus(s[0]).Unit()
 	n[0], n[1] = -n[1], n[0]
 	return n
 }
