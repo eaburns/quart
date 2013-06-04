@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
@@ -79,6 +78,8 @@ func mainLoop() {
 			switch ev := ev.(type) {
 			case wde.CloseEvent:
 				os.Exit(0)
+			case wde.KeyTypedEvent:
+				keyTyped(ev)
 			case wde.KeyDownEvent:
 				keyDown(wde.KeyEvent(ev))
 			case wde.KeyUpEvent:
@@ -126,6 +127,16 @@ func mouseUp(ev wde.MouseButtonEvent) {
 	}
 }
 
+func keyTyped(ev wde.KeyTypedEvent) {
+	switch ev.Key {
+	case "d":
+		if len(sides) > 4 {
+			sides = sides[:len(sides)-1]
+			changed = true
+		}
+	}
+}
+
 func keyDown(ev wde.KeyEvent) {
 	switch ev.Key {
 	case "left_arrow":
@@ -136,8 +147,6 @@ func keyDown(ev wde.KeyEvent) {
 		vel[1] = speed
 	case "down_arrow":
 		vel[1] = -speed
-	default:
-		fmt.Println("Pressed ", ev.Key)
 	}
 }
 
