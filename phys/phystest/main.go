@@ -80,29 +80,10 @@ func mainLoop() {
 			switch ev := ev.(type) {
 			case wde.CloseEvent:
 				os.Exit(0)
-
 			case wde.KeyDownEvent:
-				switch ev.Key {
-				case "left_arrow":
-					acc[0] = -jerk
-				case "right_arrow":
-					acc[0] = jerk
-				case "up_arrow":
-					acc[1] = jerk
-				case "down_arrow":
-					acc[1] = -jerk
-				default:
-					fmt.Println("Pressed ", ev.Key)
-				}
-
+				keyDown(wde.KeyEvent(ev))
 			case wde.KeyUpEvent:
-				switch ev.Key {
-				case "left_arrow", "right_arrow":
-					acc[0] = 0
-				case "up_arrow", "down_arrow":
-					acc[1] = 0
-				}
-
+				keyUp(wde.KeyEvent(ev))
 			case wde.MouseDraggedEvent:
 				mouseMove(ev.MouseEvent)
 			case wde.MouseMovedEvent:
@@ -145,6 +126,30 @@ func mouseUp(ev wde.MouseButtonEvent) {
 		sides = append(sides, Side{click, cursor})
 		click = Point{-1, -1}
 		changed = true
+	}
+}
+
+func keyDown(ev wde.KeyEvent) {
+	switch ev.Key {
+	case "left_arrow":
+		acc[0] = -jerk
+	case "right_arrow":
+		acc[0] = jerk
+	case "up_arrow":
+		acc[1] = jerk
+	case "down_arrow":
+		acc[1] = -jerk
+	default:
+		fmt.Println("Pressed ", ev.Key)
+	}
+}
+
+func keyUp(ev wde.KeyEvent) {
+	switch ev.Key {
+	case "left_arrow", "right_arrow":
+		acc[0] = 0
+	case "up_arrow", "down_arrow":
+		acc[1] = 0
 	}
 }
 
