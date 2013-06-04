@@ -43,13 +43,13 @@ var (
 		{{width - 1, height - 1}, {0, height - 1}},
 	}
 
-	// Click is the position of the latest mouse clicke
+	// Click is the position of the latest mouse click.
 	click = Point{-1, -1}
 
 	// Cursor is the current cursor position.
 	cursor Point
 
-	// Changed is true if anything has changeds and needs a redraw
+	// Setting changed to true causes a redraw at the next frame.
 	changed bool
 )
 
