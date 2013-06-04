@@ -34,15 +34,25 @@ var (
 )
 
 var (
-	acc   = Vector{}
-	vel   = Vector{}
+	vel, acc Vector
+	circle   = Circle{Center: Point{200, 200}, Radius: 50}
+
+	// Sides is the set of polygon sides.
 	sides = []Side{
 		{{300, 300}, {400, 200}},
 		{{400, 400}, {300, 300}},
 		{{500, 300}, {400, 400}},
 		{{400, 200}, {500, 300}},
 	}
-	circle = Circle{Center: Point{200, 200}, Radius: 50}
+
+	// Click is the position of the latest mouse clicke
+	click = Point{-1, -1}
+
+	// Cursor is the current cursor position.
+	cursor Point
+
+	// Changed is true if anything has changeds and needs a redraw
+	changed bool
 )
 
 func main() {
@@ -92,12 +102,22 @@ func mainLoop() {
 				case "up_arrow", "down_arrow":
 					acc[1] = 0
 				}
+
+			case wde.MouseDraggedEvent:
+				mouseMove(ev.MouseEvent)
+			case wde.MouseMovedEvent:
+				mouseMove(ev.MouseEvent)
+			case wde.MouseDownEvent:
+				mouseDown(wde.MouseButtonEvent(ev))
+			case wde.MouseUpEvent:
+				mouseUp(wde.MouseButtonEvent(ev))
 			}
 
 		case <-tick.C:
-			if acc.Equals(Vector{}) {
+			if !changed && acc.Equals(Vector{}) {
 				continue
 			}
+			changed = false
 			vel.Add(acc)
 			circle = phys.MoveCircle(circle, vel, sides)
 			vel = Vector{}
@@ -106,14 +126,39 @@ func mainLoop() {
 	}
 }
 
+func mouseMove(ev wde.MouseEvent) {
+	changed = true
+	cursor = Point{float64(ev.Where.X), float64(height - ev.Where.Y - 1)}
+}
+
+func mouseDown(ev wde.MouseButtonEvent) {
+	switch ev.Which {
+	case wde.LeftButton:
+		click = Point{float64(ev.Where.X), float64(height - ev.Where.Y - 1)}
+	}
+}
+
+func mouseUp(ev wde.MouseButtonEvent) {
+	switch ev.Which {
+	case wde.LeftButton:
+		sides = append(sides, Side{click, cursor})
+		click = Point{-1, -1}
+	}
+}
+
 func drawScene(win wde.Window) {
 	clear(win)
 	cv := ImageCanvas{win.Screen()}
 
 	for _, s := range sides {
-		s.Draw(cv, blue)
+		s.Draw(cv, black)
 	}
 	circle.Draw(cv, black)
+
+	if click[0] >= 0 {
+		Side{click, cursor}.Draw(cv, blue)
+	}
+
 	win.FlushImage()
 }
 
