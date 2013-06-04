@@ -127,14 +127,15 @@ func mainLoop() {
 }
 
 func mouseMove(ev wde.MouseEvent) {
-	changed = true
 	cursor = Point{float64(ev.Where.X), float64(height - ev.Where.Y - 1)}
+	changed = true
 }
 
 func mouseDown(ev wde.MouseButtonEvent) {
 	switch ev.Which {
 	case wde.LeftButton:
 		click = Point{float64(ev.Where.X), float64(height - ev.Where.Y - 1)}
+		changed = true
 	}
 }
 
@@ -143,6 +144,7 @@ func mouseUp(ev wde.MouseButtonEvent) {
 	case wde.LeftButton:
 		sides = append(sides, Side{click, cursor})
 		click = Point{-1, -1}
+		changed = true
 	}
 }
 
