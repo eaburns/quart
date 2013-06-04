@@ -23,16 +23,6 @@ const (
 )
 
 var (
-	black  = color.RGBA{A: 255}
-	white  = color.RGBA{R: 255, G: 255, B: 255, A: 255}
-	red    = color.RGBA{R: 255, A: 255}
-	green  = color.RGBA{G: 255, A: 255}
-	blue   = color.RGBA{B: 255, A: 255}
-	purple = color.RGBA{R: 255, B: 255, A: 255}
-	teal   = color.RGBA{G: 255, B: 255, A: 255}
-)
-
-var (
 	vel    Vector
 	circle = Circle{Center: Point{200, 200}, Radius: 50}
 
@@ -164,12 +154,12 @@ func drawScene(win wde.Window) {
 	cv := ImageCanvas{win.Screen()}
 
 	for _, s := range sides {
-		s.Draw(cv, black)
+		s.Draw(cv, color.Black)
 	}
-	circle.Draw(cv, black)
+	circle.Draw(cv, color.Black)
 
 	if click[0] >= 0 {
-		Side{click, cursor}.Draw(cv, blue)
+		Side{click, cursor}.Draw(cv, color.RGBA{B: 255, A: 255})
 	}
 
 	win.FlushImage()
@@ -177,5 +167,5 @@ func drawScene(win wde.Window) {
 
 func clear(win wde.Window) {
 	img := win.Screen()
-	draw.Draw(img, img.Bounds(), image.NewUniform(white), image.ZP, draw.Src)
+	draw.Draw(img, img.Bounds(), image.NewUniform(color.White), image.ZP, draw.Src)
 }
