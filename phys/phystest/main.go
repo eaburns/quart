@@ -38,10 +38,10 @@ var (
 
 	// Sides is the set of polygon sides.
 	sides = []Side{
-		{{400, 200}, {300, 300}},
-		{{300, 300}, {400, 400}},
-		{{400, 400}, {500, 300}},
-		{{500, 300}, {400, 200}},
+		{{0, height - 1}, {0, 0}},
+		{{0, 0}, {width - 1, 0}},
+		{{width - 1, 0}, {width - 1, height - 1}},
+		{{width - 1, height - 1}, {0, height - 1}},
 	}
 
 	// Click is the position of the latest mouse clicke
