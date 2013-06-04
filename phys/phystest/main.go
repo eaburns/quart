@@ -18,9 +18,8 @@ const (
 	width  = 640
 	height = 480
 
-	// Jerk is the amout by which the acceleration changes when an
-	// arrow key is pressed.
-	jerk = 5
+	// Speed is X and Y speed when arrow keys are pressed.
+	speed = 5
 )
 
 var (
@@ -34,8 +33,8 @@ var (
 )
 
 var (
-	vel, acc Vector
-	circle   = Circle{Center: Point{200, 200}, Radius: 50}
+	vel    Vector
+	circle = Circle{Center: Point{200, 200}, Radius: 50}
 
 	// Sides is the set of polygon sides.
 	sides = []Side{
@@ -95,13 +94,11 @@ func mainLoop() {
 			}
 
 		case <-tick.C:
-			if !changed && acc.Equals(Vector{}) {
+			if !changed && vel.Equals(Vector{}) {
 				continue
 			}
 			changed = false
-			vel.Add(acc)
 			circle = phys.MoveCircle(circle, vel, sides)
-			vel = Vector{}
 			drawScene(win)
 		}
 	}
@@ -132,13 +129,13 @@ func mouseUp(ev wde.MouseButtonEvent) {
 func keyDown(ev wde.KeyEvent) {
 	switch ev.Key {
 	case "left_arrow":
-		acc[0] = -jerk
+		vel[0] = -speed
 	case "right_arrow":
-		acc[0] = jerk
+		vel[0] = speed
 	case "up_arrow":
-		acc[1] = jerk
+		vel[1] = speed
 	case "down_arrow":
-		acc[1] = -jerk
+		vel[1] = -speed
 	default:
 		fmt.Println("Pressed ", ev.Key)
 	}
@@ -147,9 +144,9 @@ func keyDown(ev wde.KeyEvent) {
 func keyUp(ev wde.KeyEvent) {
 	switch ev.Key {
 	case "left_arrow", "right_arrow":
-		acc[0] = 0
+		vel[0] = 0
 	case "up_arrow", "down_arrow":
-		acc[1] = 0
+		vel[1] = 0
 	}
 }
 
