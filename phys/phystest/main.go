@@ -91,7 +91,7 @@ func mainLoop() {
 				circle = phys.MoveCircle(circle, vel, sides)
 				circle = phys.MoveCircle(circle, Vector{0, gravity}, sides)
 				dist := start.Minus(circle.Center).Magnitude()
-				stopped = dist < stopThreshold
+				stopped = vel.Equals(Vector{}) && dist < stopThreshold
 			}
 			drawScene(win)
 		}
