@@ -17,8 +17,9 @@ const (
 	width  = 640
 	height = 480
 
-	// Speed is X and Y speed when arrow keys are pressed.
-	speed = 5
+	speed         = 5
+	gravity       = -3
+	stopThreshold = 1
 )
 
 var (
@@ -49,8 +50,8 @@ var (
 	// Cursor is the current cursor position.
 	cursor Point
 
-	// Setting changed to true causes a redraw at the next frame.
-	changed bool
+	// Stopped is true if the circle has effectively stopped moving.
+	stopped bool
 )
 
 func main() {
@@ -95,11 +96,13 @@ func mainLoop() {
 			}
 
 		case <-tick.C:
-			if !changed && vel.Equals(Vector{}) {
-				continue
+			if !stopped {
+				start := circle.Center
+				circle = phys.MoveCircle(circle, vel, sides)
+				circle = phys.MoveCircle(circle, Vector{0, gravity}, sides)
+				dist := start.Minus(circle.Center).Magnitude()
+				stopped = dist < stopThreshold
 			}
-			changed = false
-			circle = phys.MoveCircle(circle, vel, sides)
 			drawScene(win)
 		}
 	}
@@ -107,14 +110,12 @@ func mainLoop() {
 
 func mouseMove(ev wde.MouseEvent) {
 	cursor = Point{float64(ev.Where.X), float64(height - ev.Where.Y - 1)}
-	changed = true
 }
 
 func mouseDown(ev wde.MouseButtonEvent) {
 	switch ev.Which {
 	case wde.LeftButton:
 		click = Point{float64(ev.Where.X), float64(height - ev.Where.Y - 1)}
-		changed = true
 	}
 }
 
@@ -123,7 +124,6 @@ func mouseUp(ev wde.MouseButtonEvent) {
 	case wde.LeftButton:
 		sides = append(sides, Side{click, cursor})
 		click = Point{-1, -1}
-		changed = true
 	}
 }
 
@@ -132,7 +132,6 @@ func keyTyped(ev wde.KeyTypedEvent) {
 	case "d":
 		if len(sides) > 4 {
 			sides = sides[:len(sides)-1]
-			changed = true
 		}
 	}
 }
@@ -148,6 +147,7 @@ func keyDown(ev wde.KeyEvent) {
 	case "down_arrow":
 		vel[1] = -speed
 	}
+	stopped = false
 }
 
 func keyUp(ev wde.KeyEvent) {
