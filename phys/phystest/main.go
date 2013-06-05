@@ -132,7 +132,7 @@ func keyDown(ev wde.KeyEvent) {
 	case "right_arrow":
 		vel[0] = speed
 	case "up_arrow":
-		vel[1] = speed
+		vel[1] = speed - gravity
 	case "down_arrow":
 		vel[1] = -speed
 	}
