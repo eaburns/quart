@@ -8,6 +8,20 @@ import (
 	. "github.com/eaburns/quart/geom"
 )
 
+const (
+	// The factor of the height of a body that is considered to be the
+	// bottom.  This is used to determine if the body is on the ground
+	// or if it is in the air: if the bottom of the body collides, then the
+	// body is "on the ground."
+	//
+	// In effect, this determines how steep of a hill a body can climb.
+	// The steeper the hill, the higher up on the body that it will collide.
+	// So, a higher value for bottomFactor means the body can climb
+	// steeper hills.  For elliptical bodies, the steepness of climbable
+	// hills is also determined by the height of the ellipse.
+	bottomFactor = 0.05
+)
+
 // MoveEllipse moves an ellipse with a given velocity, handling collision with segments.
 // The second return value is true if the ellipse collided with a segment beneath it,
 // otherwise it is false.  This value can be used to decide if it is "on the ground."
@@ -36,7 +50,8 @@ func MoveCircle(c Circle, v Vector, segs []Segment) (Circle, bool) {
 	for !v.Equals(Vector{}) {
 		mv := moveCircle1(c, v, segs)
 		c.Center.Add(v.Unit().ScaledBy(mv.distance))
-		hitGround := v[1] < 0 && mv.hit && mv.hitPoint[1] < c.Center[1]-Threshold
+		low := c.Center[1] - c.Radius*(1-bottomFactor*2)
+		hitGround := v[1] < 0 && mv.hit && mv.hitPoint[1] < low
 		onGround = onGround || hitGround
 		v = mv.newVelocity
 	}
