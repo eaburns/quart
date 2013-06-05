@@ -44,7 +44,7 @@ func moveCircle1(c Circle, v Vector, segs []Segment) (float64, Vector) {
 	dist := math.Inf(1)
 
 	for _, s := range segs {
-		if d, pt, hit := CircleSegmentHit(c, v, s); hit && d < dist {
+		if d, pt, hit := circleSegmentHit(c, v, s); hit && d < dist {
 			dist = d
 			hitPt = pt
 		}
@@ -67,11 +67,11 @@ func moveCircle1(c Circle, v Vector, segs []Segment) (float64, Vector) {
 	return dist - Threshold, dest.Minus(hitPt)
 }
 
-// CircleSegmentHit returns information about the collision of a circle
+// circleSegmentHit returns information about the collision of a circle
 // and a Segment.  The return values are the distance along the velocity
 // vector of the collision, the point on the polygon that collided, and a
 // boolean that is true if there was a collision and false if not.
-func CircleSegmentHit(c Circle, v Vector, s Segment) (float64, Point, bool) {
+func circleSegmentHit(c Circle, v Vector, s Segment) (float64, Point, bool) {
 	planeHit, hit := circlePlaneHit(c, v, Plane(s.Line()))
 	if !hit {
 		return 0, Point{}, false
