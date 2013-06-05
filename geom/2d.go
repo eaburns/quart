@@ -40,3 +40,6 @@ func (s Segment) Line() Line {
 
 // A Circle is a 2-dimensional sphere.
 type Circle Sphere
+
+// An Ellipse is a 2-dimensional ellipsoid.
+type Ellipse Ellipsoid

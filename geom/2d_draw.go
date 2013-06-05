@@ -106,6 +106,25 @@ func (cir Circle) Draw(cv Canvas, cl color.Color) {
 	}
 }
 
+// Draw draws an ellipse on the canvas.
+func (e Ellipse) Draw(cv Canvas, cl color.Color) {
+	const N = 100
+	const dt = 2 * math.Pi / N
+
+	x0, y0 := 1.0, 0.0
+	for i := 1; i < N+1; i++ {
+		t := float64(i) * dt
+		x1 := math.Cos(t)
+		y1 := math.Sin(t)
+		cv.StrokeLine(cl,
+			round(e.Center[0]+x0*e.Radii[0]),
+			round(e.Center[1]+y0*e.Radii[1]),
+			round(e.Center[0]+x1*e.Radii[0]),
+			round(e.Center[1]+y1*e.Radii[1]))
+		x0, y0 = x1, y1
+	}
+}
+
 func round(f float64) int {
 	return int(f + 0.5)
 }

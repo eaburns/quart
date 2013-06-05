@@ -237,8 +237,12 @@ func (s Segment) NearestPoint(p Point) Point {
 	return s[0].Plus(V.ScaledBy(t))
 }
 
-// A Sphere is the set of points that are equidistant from a center point.
 type Sphere struct {
 	Center Point
 	Radius float64
+}
+
+type Ellipsoid struct {
+	Center Point
+	Radii  Vector
 }
