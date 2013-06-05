@@ -22,16 +22,16 @@ type Canvas interface {
 // Draw draws a point on the canvas.
 func (pt Point) Draw(cv Canvas, cl color.Color) {
 	const radius = 4
-	x0, y0 := int(pt[0]+0.5), int(pt[1]+0.5)
+	x0, y0 := round(pt[0]), round(pt[1])
 	cv.FillCircle(cl, x0, y0, radius)
 }
 
 // DrawAt draws the vector extending from a given point.
 func (v Vector) DrawAt(cv Canvas, cl color.Color, p Point) {
 	p.Draw(cv, cl)
-	x0, y0 := int(p[0]+0.5), int(p[1]+0.5)
+	x0, y0 := round(p[0]), round(p[1])
 	p1 := p.Plus(v)
-	x1, y1 := int(p1[0]+0.5), int(p1[1]+0.5)
+	x1, y1 := round(p1[0]), round(p1[1])
 	cv.StrokeLine(cl, x0, y0, x1, y1)
 }
 
@@ -60,8 +60,8 @@ func (l Line) Draw(cv Canvas, cl color.Color) {
 		}
 	}
 
-	x0, y0 := int(ends[0][0]+0.5), int(ends[0][1]+0.5)
-	x1, y1 := int(ends[1][0]+0.5), int(ends[1][1]+0.5)
+	x0, y0 := round(ends[0][0]+0.5), int(ends[0][1])
+	x1, y1 := round(ends[1][0]+0.5), int(ends[1][1])
 	cv.StrokeLine(cl, x0, y0, x1, y1)
 
 	len := ends[0].Distance(ends[1])
@@ -84,8 +84,8 @@ func (s Segment) Draw(cv Canvas, cl color.Color) {
 	const length = 25
 	s[0].Draw(cv, cl)
 	s[1].Draw(cv, cl)
-	x0, y0 := int(s[0][0]+0.5), int(s[0][1]+0.5)
-	x1, y1 := int(s[1][0]+0.5), int(s[1][1]+0.5)
+	x0, y0 := round(s[0][0]+0.5), int(s[0][1])
+	x1, y1 := round(s[1][0]+0.5), int(s[1][1])
 	cv.StrokeLine(cl, x0, y0, x1, y1)
 	s.Normal().ScaledBy(length).DrawAt(cv, cl, s.Center())
 }
@@ -95,15 +95,19 @@ func (cir Circle) Draw(cv Canvas, cl color.Color) {
 	const N = 100
 	const dt = 2 * math.Pi / N
 
-	x0 := int(cir.Center[0] + cir.Radius + 0.5)
-	y0 := int(cir.Center[1] + 0.5)
+	x0 := round(cir.Center[0] + cir.Radius)
+	y0 := round(cir.Center[1])
 	for i := 1; i < N+1; i++ {
 		t := float64(i) * dt
-		x1 := int(cir.Center[0] + cir.Radius*math.Cos(t) + 0.5)
-		y1 := int(cir.Center[1] + cir.Radius*math.Sin(t) + 0.5)
+		x1 := round(cir.Center[0] + cir.Radius*math.Cos(t))
+		y1 := round(cir.Center[1] + cir.Radius*math.Sin(t))
 		cv.StrokeLine(cl, x0, y0, x1, y1)
 		x0, y0 = x1, y1
 	}
+}
+
+func round(f float64) int {
+	return int(f + 0.5)
 }
 
 // An ImageCanvas implements the Canvas interface using the
