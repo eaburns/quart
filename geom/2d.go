@@ -26,15 +26,15 @@ func (a Line) LineIntersection(b Line) (Point, bool) {
 	return r.Origin.Plus(r.Direction.ScaledBy(d)), true
 }
 
-// Normal returns the normal vector of the side.
-func (s Side) Normal() Vector {
+// Normal returns the normal vector of the segment.
+func (s Segment) Normal() Vector {
 	n := s[1].Minus(s[0]).Unit()
 	n[0], n[1] = -n[1], n[0]
 	return n
 }
 
-// Line returns the line on which this face resides.
-func (s Side) Line() Line {
+// Line returns the line containing the segment.
+func (s Segment) Line() Line {
 	return Line{Origin: s[0], Normal: s.Normal()}
 }
 

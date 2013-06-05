@@ -45,7 +45,7 @@ func (ray Ray) Draw(cv Canvas, cl color.Color) {
 func (l Line) Draw(cv Canvas, cl color.Color) {
 	wi, hi := cv.Size()
 	w, h := float64(wi), float64(hi)
-	sides := [4]Line{
+	segs := [4]Line{
 		{Origin: Point{0, 0}, Normal: Vector{0, 1}},
 		{Origin: Point{0, 0}, Normal: Vector{1, 0}},
 		{Origin: Point{w - 1, h - 1}, Normal: Vector{0, -1}},
@@ -53,7 +53,7 @@ func (l Line) Draw(cv Canvas, cl color.Color) {
 	}
 
 	var ends []Point
-	for _, s := range sides {
+	for _, s := range segs {
 		p, hit := l.LineIntersection(s)
 		if hit && onCanvas(p, cv) && (len(ends) == 0 || !p.Equals(ends[0])) {
 			ends = append(ends, p)
@@ -79,8 +79,8 @@ func onCanvas(p Point, cv Canvas) bool {
 	return p[0] >= 0 && p[0] < w && p[1] >= 0 && p[1] < h
 }
 
-// Draw draws the side on the canvas.
-func (s Side) Draw(cv Canvas, cl color.Color) {
+// Draw draws the segment on the canvas.
+func (s Segment) Draw(cv Canvas, cl color.Color) {
 	const length = 25
 	s[0].Draw(cv, cl)
 	s[1].Draw(cv, cl)

@@ -206,23 +206,23 @@ func (r Ray) SphereIntersection(s Sphere) (float64, bool) {
 	return v - math.Sqrt(d), true
 }
 
-// A Side is the side of a polygon, defined by two points.
-type Side [2]Point
+// A Segment is the portion of a line between and including two points.
+type Segment [2]Point
 
 // Center returns the point at the center of the face.
-func (s Side) Center() Point {
+func (s Segment) Center() Point {
 	d := s[1].Minus(s[0]).Unit()
 	l := s.Length()
 	return s[0].Plus(d.ScaledBy(l / 2))
 }
 
 // Length returns the length of the face.
-func (s Side) Length() float64 {
+func (s Segment) Length() float64 {
 	return s[0].Distance(s[1])
 }
 
 // NearestPoint returns the point on the face nearest to p.
-func (s Side) NearestPoint(p Point) Point {
+func (s Segment) NearestPoint(p Point) Point {
 	V := s[1].Minus(s[0])
 	d := V.Magnitude()
 	V = V.Unit()

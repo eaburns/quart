@@ -26,8 +26,8 @@ var (
 	vel    Vector
 	circle = Circle{Center: Point{200, 200}, Radius: 50}
 
-	// Sides is the set of polygon sides.
-	sides = []Side{
+	// Segs is the set of segments defining obstacles.
+	segs = []Segment{
 		{{0, height - 1}, {0, 0}},
 		{{0, 0}, {width - 1, 0}},
 		{{width - 1, 0}, {width - 1, height - 1}},
@@ -88,7 +88,7 @@ func mainLoop() {
 		case <-tick.C:
 			if !stopped {
 				start := circle.Center
-				circle = phys.MoveCircle(circle, vel.Plus(Vector{0, gravity}), sides)
+				circle = phys.MoveCircle(circle, vel.Plus(Vector{0, gravity}), segs)
 				dist := start.Minus(circle.Center).Magnitude()
 				stopped = vel.Equals(Vector{}) && dist < stopThreshold
 			}
@@ -111,7 +111,7 @@ func mouseDown(ev wde.MouseButtonEvent) {
 func mouseUp(ev wde.MouseButtonEvent) {
 	switch ev.Which {
 	case wde.LeftButton:
-		sides = append(sides, Side{click, cursor})
+		segs = append(segs, Segment{click, cursor})
 		click = Point{-1, -1}
 	}
 }
@@ -119,8 +119,8 @@ func mouseUp(ev wde.MouseButtonEvent) {
 func keyTyped(ev wde.KeyTypedEvent) {
 	switch ev.Key {
 	case "d":
-		if len(sides) > 4 {
-			sides = sides[:len(sides)-1]
+		if len(segs) > 4 {
+			segs = segs[:len(segs)-1]
 		}
 	}
 }
@@ -152,13 +152,13 @@ func drawScene(win wde.Window) {
 	clear(win)
 	cv := ImageCanvas{win.Screen()}
 
-	for _, s := range sides {
+	for _, s := range segs {
 		s.Draw(cv, color.Black)
 	}
 	circle.Draw(cv, color.Black)
 
 	if click[0] >= 0 {
-		Side{click, cursor}.Draw(cv, color.RGBA{B: 255, A: 255})
+		Segment{click, cursor}.Draw(cv, color.RGBA{B: 255, A: 255})
 	}
 
 	win.FlushImage()
