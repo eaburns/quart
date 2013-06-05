@@ -4,6 +4,7 @@ import (
 	"image"
 	"image/color"
 	"image/draw"
+	"math"
 	"os"
 	"time"
 
@@ -17,13 +18,19 @@ const (
 	width  = 640
 	height = 480
 
-	speed         = 5
-	gravity       = -3
-	stopThreshold = 1
+	speed   = 5
+	gravity = -1
+
+	// StopFactor determines when an object has stopped moving.
+	// If the distance moved is less than stopFactor times the fall
+	// velocity, then the object is considered to be stopped.
+	stopFactor       = 0.25
+	terminalVelocity = -20
 )
 
 var (
-	vel    Vector
+	move   Vector
+	fall   float64
 	circle = Circle{Center: Point{200, 200}, Radius: 50}
 
 	// Segs is the set of segments defining obstacles.
@@ -88,9 +95,18 @@ func mainLoop() {
 		case <-tick.C:
 			if !stopped {
 				start := circle.Center
-				circle = phys.MoveCircle(circle, vel.Plus(Vector{0, gravity}), segs)
+				if move.Equals(Vector{}) {
+					fall = math.Max(fall+gravity, terminalVelocity)
+				} else {
+					fall = gravity
+				}
+				vel := move.Plus(Vector{0, fall})
+				circle = phys.MoveCircle(circle, vel, segs)
 				dist := start.Minus(circle.Center).Magnitude()
-				stopped = vel.Equals(Vector{}) && dist < stopThreshold
+				stopped = move.Equals(Vector{}) && dist < stopFactor*math.Abs(fall)
+				if stopped {
+					fall = gravity
+				}
 			}
 			drawScene(win)
 		}
@@ -128,13 +144,13 @@ func keyTyped(ev wde.KeyTypedEvent) {
 func keyDown(ev wde.KeyEvent) {
 	switch ev.Key {
 	case "left_arrow":
-		vel[0] = -speed
+		move[0] = -speed
 	case "right_arrow":
-		vel[0] = speed
+		move[0] = speed
 	case "up_arrow":
-		vel[1] = speed - gravity
+		move[1] = speed - gravity
 	case "down_arrow":
-		vel[1] = -speed
+		move[1] = -speed
 	}
 	stopped = false
 }
@@ -142,9 +158,9 @@ func keyDown(ev wde.KeyEvent) {
 func keyUp(ev wde.KeyEvent) {
 	switch ev.Key {
 	case "left_arrow", "right_arrow":
-		vel[0] = 0
+		move[0] = 0
 	case "up_arrow", "down_arrow":
-		vel[1] = 0
+		move[1] = 0
 	}
 }
 
