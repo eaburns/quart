@@ -8,6 +8,24 @@ import (
 	. "github.com/eaburns/quart/geom"
 )
 
+// MoveEllipse moves an ellipse with a given velocity, handling collision with segments.
+func MoveEllipse(e Ellipse, v Vector, segs []Segment) Ellipse {
+	tr := Vector{}
+	for i, r := range e.Radii {
+		tr[i] = 1 / r
+	}
+
+	c := Circle{Center: e.Center.Times(tr), Radius: 1}
+	v = v.Times(tr)
+	trSegs := make([]Segment, len(segs))
+	for i := range segs {
+		trSegs[i][0] = segs[i][0].Times(tr)
+		trSegs[i][1] = segs[i][1].Times(tr)
+	}
+	c2 := MoveCircle(c, v, trSegs)
+	return Ellipse{Center: c2.Center.Times(e.Radii), Radii: e.Radii}
+}
+
 // MoveCircle moves a circle with a given velocity, handling collision with segments.
 func MoveCircle(c Circle, v Vector, segs []Segment) Circle {
 	for !v.Equals(Vector{}) {

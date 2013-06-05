@@ -29,9 +29,9 @@ const (
 )
 
 var (
-	move   Vector
-	fall   float64
-	circle = Circle{Center: Point{200, 200}, Radius: 50}
+	move Vector
+	fall float64
+	body = Ellipse{Center: Point{200, 200}, Radii: Vector{25, 50}}
 
 	// Segs is the set of segments defining obstacles.
 	segs = []Segment{
@@ -47,7 +47,7 @@ var (
 	// Cursor is the current cursor position.
 	cursor Point
 
-	// Stopped is true if the circle has effectively stopped moving.
+	// Stopped is true if the body has effectively stopped moving.
 	stopped bool
 )
 
@@ -94,15 +94,15 @@ func mainLoop() {
 
 		case <-tick.C:
 			if !stopped {
-				start := circle.Center
+				start := body.Center
 				if move.Equals(Vector{}) {
 					fall = math.Max(fall+gravity, terminalVelocity)
 				} else {
 					fall = gravity
 				}
 				vel := move.Plus(Vector{0, fall})
-				circle = phys.MoveCircle(circle, vel, segs)
-				dist := start.Minus(circle.Center).Magnitude()
+				body = phys.MoveEllipse(body, vel, segs)
+				dist := start.Minus(body.Center).Magnitude()
 				stopped = move.Equals(Vector{}) && dist < stopFactor*math.Abs(fall)
 				if stopped {
 					fall = gravity
@@ -171,7 +171,7 @@ func drawScene(win wde.Window) {
 	for _, s := range segs {
 		s.Draw(cv, color.Black)
 	}
-	circle.Draw(cv, color.Black)
+	body.Draw(cv, color.Black)
 
 	if click[0] >= 0 {
 		Segment{click, cursor}.Draw(cv, color.RGBA{B: 255, A: 255})
