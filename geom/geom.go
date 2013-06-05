@@ -50,6 +50,14 @@ func (a Point) Minus(b Point) Vector {
 	return Vector(a)
 }
 
+// Times returns the component-wise product of a point and a vector.
+func (p Point) Times(v Vector) Point {
+	for i, vi := range v {
+		p[i] *= vi
+	}
+	return p
+}
+
 // SquaredDistance returns the squared distance between two points.
 func (a Point) SquaredDistance(b Point) float64 {
 	dist := 0.0
@@ -105,6 +113,14 @@ func (a *Vector) Subtract(b Vector) {
 	for i, bi := range b {
 		a[i] -= bi
 	}
+}
+
+// Times returns the component-wise product of two vectors.
+func (a Vector) Times(b Vector) Vector {
+	for i, bi := range b {
+		a[i] *= bi
+	}
+	return a
 }
 
 // ScaledBy returns the product of a vector and a scalar.
