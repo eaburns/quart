@@ -253,11 +253,13 @@ func (s Segment) NearestPoint(p Point) Point {
 	return s[0].Plus(V.ScaledBy(t))
 }
 
+// A Sphere is the set of all points at a fixed distance from a center point.
 type Sphere struct {
 	Center Point
 	Radius float64
 }
 
+// An Ellipsoid is like a sphere, but it has one radius for each axis.
 type Ellipsoid struct {
 	Center Point
 	Radii  Vector
