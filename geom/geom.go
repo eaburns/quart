@@ -69,6 +69,11 @@ func (a Point) SquaredDistance(b Point) float64 {
 	return dist
 }
 
+// Distance returns the distance between two points.
+func (a Point) Distance(b Point) float64 {
+	return math.Sqrt(a.SquaredDistance(b))
+}
+
 // Equals returns true if the points are close enough to be considered equal.
 func (a Point) Equals(b Point) bool {
 	for i, ai := range a {
@@ -77,11 +82,6 @@ func (a Point) Equals(b Point) bool {
 		}
 	}
 	return true
-}
-
-// Distance returns the distance between two points.
-func (a Point) Distance(b Point) float64 {
-	return math.Sqrt(a.SquaredDistance(b))
 }
 
 // A Vector is a direction and magnitude in K-space.
