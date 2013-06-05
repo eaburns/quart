@@ -9,7 +9,9 @@ import (
 )
 
 // MoveEllipse moves an ellipse with a given velocity, handling collision with segments.
-func MoveEllipse(e Ellipse, v Vector, segs []Segment) Ellipse {
+// The second return value is true if the ellipse collided with a segment beneath it,
+// otherwise it is false.  This value can be used to decide if it is "on the ground."
+func MoveEllipse(e Ellipse, v Vector, segs []Segment) (Ellipse, bool) {
 	tr := Vector{}
 	for i, r := range e.Radii {
 		tr[i] = 1 / r
@@ -22,24 +24,34 @@ func MoveEllipse(e Ellipse, v Vector, segs []Segment) Ellipse {
 		trSegs[i][0] = segs[i][0].Times(tr)
 		trSegs[i][1] = segs[i][1].Times(tr)
 	}
-	c2 := MoveCircle(c, v, trSegs)
-	return Ellipse{Center: c2.Center.Times(e.Radii), Radii: e.Radii}
+	c2, onGround := MoveCircle(c, v, trSegs)
+	return Ellipse{Center: c2.Center.Times(e.Radii), Radii: e.Radii}, onGround
 }
 
 // MoveCircle moves a circle with a given velocity, handling collision with segments.
-func MoveCircle(c Circle, v Vector, segs []Segment) Circle {
+// The second return value is true if the circle collided with a segment beneath it,
+// otherwise it is false.  This value can be used to decide if it is "on the ground."
+func MoveCircle(c Circle, v Vector, segs []Segment) (Circle, bool) {
+	onGround := false
 	for !v.Equals(Vector{}) {
-		d, v2 := moveCircle1(c, v, segs)
-		c.Center.Add(v.Unit().ScaledBy(d))
-		v = v2
+		mv := moveCircle1(c, v, segs)
+		c.Center.Add(v.Unit().ScaledBy(mv.distance))
+		hitGround := v[1] < 0 && mv.hit && mv.hitPoint[1] < c.Center[1]-Threshold
+		onGround = onGround || hitGround
+		v = mv.newVelocity
 	}
-	return c
+	return c, onGround
 }
 
-// moveCircle1 traces a circle along a velocity vector until the first collision
-// with a Segment.  The return value is the distance that the circle moved,
-// and the new velocity vector.
-func moveCircle1(c Circle, v Vector, segs []Segment) (float64, Vector) {
+type move struct {
+	distance    float64
+	newVelocity Vector
+	hit         bool
+	hitPoint    Point
+}
+
+// moveCircle1 moves a circle along a vector until the first collision with a Segment.
+func moveCircle1(c Circle, v Vector, segs []Segment) move {
 	hitPt := Point{}
 	dist := math.Inf(1)
 
@@ -50,7 +62,10 @@ func moveCircle1(c Circle, v Vector, segs []Segment) (float64, Vector) {
 		}
 	}
 	if math.IsInf(dist, 1) {
-		return v.Magnitude(), Vector{}
+		return move{
+			distance:    v.Magnitude(),
+			newVelocity: Vector{},
+		}
 	}
 
 	vUnit := v.Unit()
@@ -64,7 +79,13 @@ func moveCircle1(c Circle, v Vector, segs []Segment) (float64, Vector) {
 		panic("Couldn't project to the sliding plane!")
 	}
 	dest.Add(slide.Normal.Unit().ScaledBy(d))
-	return dist - Threshold, dest.Minus(hitPt)
+
+	return move{
+		distance:    dist - Threshold,
+		newVelocity: dest.Minus(hitPt),
+		hit:         true,
+		hitPoint:    hitPt,
+	}
 }
 
 // circleSegmentHit returns information about the collision of a circle

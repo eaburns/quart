@@ -49,6 +49,9 @@ var (
 
 	// Stopped is true if the body has effectively stopped moving.
 	stopped bool
+
+	// OnGround is true if the body is not falling.
+	onGround bool
 )
 
 func main() {
@@ -94,17 +97,15 @@ func mainLoop() {
 
 		case <-tick.C:
 			if !stopped {
-				start := body.Center
-				if move.Equals(Vector{}) {
+				if !onGround && Float64Equals(move[1], 0) {
 					fall = math.Max(fall+gravity, terminalVelocity)
-				} else {
-					fall = gravity
 				}
 				vel := move.Plus(Vector{0, fall})
-				body = phys.MoveEllipse(body, vel, segs)
+				start := body.Center
+				body, onGround = phys.MoveEllipse(body, vel, segs)
 				dist := start.Minus(body.Center).Magnitude()
 				stopped = move.Equals(Vector{}) && dist < stopFactor*math.Abs(fall)
-				if stopped {
+				if onGround {
 					fall = gravity
 				}
 			}
