@@ -1,0 +1,3 @@
+geom/2d.go:5:14: should omit type [2]float64 from declaration of var ensure2d; it will be inferred from the right-hand side
+phys/collide.go:8:2: should not use dot imports
+phys/phystest/main.go:11:2: should not use dot imports
