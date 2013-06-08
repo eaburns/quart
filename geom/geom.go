@@ -14,7 +14,7 @@ const (
 	// Threshold is the amount by which two floating points must differ
 	// to be considered different by the equality rountines in this package.
 	//
-	// The current value is the square root of the 64-bit floating point
+	// The current value is the square root of the IEEE 64-bit floating point
 	// epsilon value.  This is the value recommended in Numerical
 	// Recipes.
 	Threshold = 1.4901161193847656e-08
