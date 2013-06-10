@@ -217,3 +217,204 @@ func TestSegmentNearestPoint(t *testing.T) {
 			test.p, test.s0, test.s1, test.n, n)
 	}
 }
+
+func BenchmarkPointPlus(b *testing.B) {
+	p, v := Point{1, 1}, Vector{2, 2}
+	for i := 0; i < b.N; i++ {
+		p.Plus(v)
+	}
+}
+
+func BenchmarkPointAdd(b *testing.B) {
+	p, v := Point{1, 1}, Vector{2, 2}
+	for i := 0; i < b.N; i++ {
+		p.Add(v)
+	}
+}
+
+func BenchmarkPointMinus(b *testing.B) {
+	p0, p1 := Point{1, 1}, Point{2, 2}
+	for i := 0; i < b.N; i++ {
+		p0.Minus(p1)
+	}
+}
+
+func BenchmarkPointTimes(b *testing.B) {
+	p, v := Point{1, 1}, Vector{2, 2}
+	for i := 0; i < b.N; i++ {
+		p.Times(v)
+	}
+}
+
+func BenchmarkPointSquaredDistance(b *testing.B) {
+	p0, p1 := Point{1, 1}, Point{2, 2}
+	for i := 0; i < b.N; i++ {
+		p0.SquaredDistance(p1)
+	}
+}
+
+func BenchmarkPointDistance(b *testing.B) {
+	p0, p1 := Point{1, 1}, Point{2, 2}
+	for i := 0; i < b.N; i++ {
+		p0.Distance(p1)
+	}
+}
+
+func BenchmarkPointEqualsDiff(b *testing.B) {
+	p0, p1 := Point{1, 1}, Point{2, 2}
+	for i := 0; i < b.N; i++ {
+		p0.Equals(p1)
+	}
+}
+
+func BenchmarkPointEqualsSame(b *testing.B) {
+	p := Point{1, 1}
+	for i := 0; i < b.N; i++ {
+		p.Equals(p)
+	}
+}
+
+func BenchmarkVectorPlus(b *testing.B) {
+	v0, v1 := Vector{1, 1}, Vector{2, 2}
+	for i := 0; i < b.N; i++ {
+		v0.Plus(v1)
+	}
+}
+
+func BenchmarkVectorAdd(b *testing.B) {
+	v0, v1 := Vector{1, 1}, Vector{2, 2}
+	for i := 0; i < b.N; i++ {
+		v0.Add(v1)
+	}
+}
+
+func BenchmarkVectorMinus(b *testing.B) {
+	v0, v1 := Vector{1, 1}, Vector{2, 2}
+	for i := 0; i < b.N; i++ {
+		v0.Minus(v1)
+	}
+}
+
+func BenchmarkVectorSubtract(b *testing.B) {
+	v0, v1 := Vector{1, 1}, Vector{2, 2}
+	for i := 0; i < b.N; i++ {
+		v0.Subtract(v1)
+	}
+}
+
+func BenchmarkVectorTimes(b *testing.B) {
+	v0, v1 := Vector{1, 1}, Vector{2, 2}
+	for i := 0; i < b.N; i++ {
+		v0.Times(v1)
+	}
+}
+
+func BenchmarkVectorScaledBy(b *testing.B) {
+	v0 := Vector{1, 1}
+	for i := 0; i < b.N; i++ {
+		v0.ScaledBy(2)
+	}
+}
+
+func BenchmarkVectorDot(b *testing.B) {
+	v0, v1 := Vector{1, 1}, Vector{2, 2}
+	for i := 0; i < b.N; i++ {
+		v0.Dot(v1)
+	}
+}
+
+func BenchmarkVectorSquaredMagnitude(b *testing.B) {
+	v := Vector{1, 1}
+	for i := 0; i < b.N; i++ {
+		v.SquaredMagnitude()
+	}
+}
+
+func BenchmarkVectorMagnitude(b *testing.B) {
+	v := Vector{1, 1}
+	for i := 0; i < b.N; i++ {
+		v.Magnitude()
+	}
+}
+
+func BenchmarkVectorUnit(b *testing.B) {
+	v := Vector{1, 1}
+	for i := 0; i < b.N; i++ {
+		v.Unit()
+	}
+}
+
+func BenchmarkVectorInverse(b *testing.B) {
+	v := Vector{1, 1}
+	for i := 0; i < b.N; i++ {
+		v.Inverse()
+	}
+}
+
+func BenchmarkVectorEqualsDiff(b *testing.B) {
+	v0, v1 := Vector{1, 1}, Vector{2, 2}
+	for i := 0; i < b.N; i++ {
+		v0.Equals(v1)
+	}
+}
+
+func BenchmarkVectorEqualsSame(b *testing.B) {
+	v := Vector{1, 1}
+	for i := 0; i < b.N; i++ {
+		v.Equals(v)
+	}
+}
+
+func BenchmarkRayPlaneIntersectionHit(b *testing.B) {
+	r := Ray{Origin: Point{0, 0}, Direction: Vector{1, 0}}
+	p := Plane{Origin: Point{1, 0}, Normal: Vector{-1, 0}}
+	for i := 0; i < b.N; i++ {
+		r.PlaneIntersection(p)
+	}
+}
+
+func BenchmarkRayPlaneIntersectionMiss(b *testing.B) {
+	r := Ray{Origin: Point{0, 0}, Direction: Vector{1, 0}}
+	p := Plane{Origin: Point{0, 1}, Normal: Vector{0, -1}}
+	for i := 0; i < b.N; i++ {
+		r.PlaneIntersection(p)
+	}
+}
+
+func BenchmarkRaySphereIntersectionHit(b *testing.B) {
+	r := Ray{Origin: Point{0, 0}, Direction: Vector{1, 0}}
+	s := Sphere{Center: Point{1, 0}, Radius: 1}
+	for i := 0; i < b.N; i++ {
+		r.SphereIntersection(s)
+	}
+}
+
+func BenchmarkRaySphereIntersectionMiss(b *testing.B) {
+	r := Ray{Origin: Point{0, 0}, Direction: Vector{1, 0}}
+	s := Sphere{Center: Point{2, 2}, Radius: 1}
+	for i := 0; i < b.N; i++ {
+		r.SphereIntersection(s)
+	}
+}
+
+func BenchmarkSegmentCenter(b *testing.B) {
+	s := Segment{Point{0, 0}, Point{2, 2}}
+	for i := 0; i < b.N; i++ {
+		s.Center()
+	}
+}
+
+func BenchmarkSegmentLength(b *testing.B) {
+	s := Segment{Point{0, 0}, Point{2, 2}}
+	for i := 0; i < b.N; i++ {
+		s.Length()
+	}
+}
+
+func BenchmarkSegmentNearestPoint(b *testing.B) {
+	s := Segment{Point{0, 0}, Point{2, 2}}
+	p := Point{1, 0}
+	for i := 0; i < b.N; i++ {
+		s.NearestPoint(p)
+	}
+}

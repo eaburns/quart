@@ -48,3 +48,40 @@ func TestSegmentNormal(t *testing.T) {
 		t.Errorf("Expect normal of %v to %v to be %v, got %v", test.s0, test.s1, test.n, n)
 	}
 }
+
+func BenchmarkLineDirection(b *testing.B) {
+	l := Line{Origin: Point{0, 0}, Normal: Vector{0, 1}}
+	for i := 0; i < b.N; i++ {
+		l.Direction()
+	}
+}
+
+func BenchmarkLineLineIntersectionHit(b *testing.B) {
+	l0 := Line{Origin: Point{0, 0}, Normal: Vector{0, 1}}
+	l1 := Line{Origin: Point{0, 0}, Normal: Vector{1, 0}}
+	for i := 0; i < b.N; i++ {
+		l0.LineIntersection(l1)
+	}
+}
+
+func BenchmarkLineLineIntersectionMiss(b *testing.B) {
+	l0 := Line{Origin: Point{0, 0}, Normal: Vector{0, 1}}
+	l1 := Line{Origin: Point{1, 0}, Normal: Vector{0, 1}}
+	for i := 0; i < b.N; i++ {
+		l0.LineIntersection(l1)
+	}
+}
+
+func BenchmarkSegmentNormal(b *testing.B) {
+	s := Segment{Point{0, 0}, Point{1, 0}}
+	for i := 0; i < b.N; i++ {
+		s.Normal()
+	}
+}
+
+func BenchmarkSegmentLine(b *testing.B) {
+	s := Segment{Point{0, 0}, Point{1, 0}}
+	for i := 0; i < b.N; i++ {
+		s.Line()
+	}
+}
