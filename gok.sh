@@ -3,7 +3,7 @@
 # Verifies that go code passes go fmt, go vet, golint, and go test.
 #
 
-lintignore=.golintignore
+lintignore=golintignore
 
 o=$(tempfile)
 
