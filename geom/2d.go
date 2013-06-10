@@ -43,3 +43,19 @@ type Circle Sphere
 
 // An Ellipse is a 2-dimensional ellipsoid.
 type Ellipse Ellipsoid
+
+// A Rectangle represents a rectangular region of space.
+type Rectangle struct {
+	Min  Point
+	Size Vector
+}
+
+// Max returns the point on the rectangle with the maximum x and y values.
+func (r *Rectangle) Max() Point {
+	return r.Min.Plus(r.Size)
+}
+
+// Center returns the point in the center of the rectangle.
+func (r *Rectangle) Center() Point {
+	return r.Min.Plus(r.Size.ScaledBy(0.5))
+}

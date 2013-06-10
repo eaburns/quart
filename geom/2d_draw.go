@@ -125,6 +125,15 @@ func (e Ellipse) Draw(cv Canvas, cl color.Color) {
 	}
 }
 
+// Draw draws a rectangle on the canvas.
+func (r Rectangle) Draw(cv Canvas, cl color.Color) {
+	mn, mx := r.Min, r.Max()
+	cv.StrokeLine(cl, round(mn[0]), round(mn[1]), round(mx[0]), round(mn[1]))
+	cv.StrokeLine(cl, round(mx[0]), round(mn[1]), round(mx[0]), round(mx[1]))
+	cv.StrokeLine(cl, round(mx[0]), round(mx[1]), round(mn[0]), round(mx[1]))
+	cv.StrokeLine(cl, round(mn[0]), round(mx[1]), round(mn[0]), round(mn[1]))
+}
+
 func round(f float64) int {
 	return int(f + 0.5)
 }

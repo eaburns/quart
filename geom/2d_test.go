@@ -49,6 +49,44 @@ func TestSegmentNormal(t *testing.T) {
 	}
 }
 
+func TestRectangleMax(t *testing.T) {
+	tests := []struct {
+		min  Point
+		size Vector
+		max  Point
+	}{
+		{Point{0, 0}, Vector{1, 1}, Point{1, 1}},
+		{Point{0, 1}, Vector{1, 1}, Point{1, 2}},
+	}
+	for _, test := range tests {
+		r := Rectangle{test.min, test.size}
+		m := r.Max()
+		if m.Equals(test.max) {
+			continue
+		}
+		t.Errorf("Expected max of %v to be %v, got %v", r, test.max, m)
+	}
+}
+
+func TestRectangleCenter(t *testing.T) {
+	tests := []struct {
+		min    Point
+		size   Vector
+		center Point
+	}{
+		{Point{0, 0}, Vector{1, 1}, Point{0.5, 0.5}},
+		{Point{-1, -1}, Vector{2, 2}, Point{0, 0}},
+	}
+	for _, test := range tests {
+		r := Rectangle{test.min, test.size}
+		c := r.Center()
+		if c.Equals(test.center) {
+			continue
+		}
+		t.Errorf("Expected center of %v to be %v, got %v", r, test.center, c)
+	}
+}
+
 func BenchmarkLineDirection(b *testing.B) {
 	l := Line{Origin: Point{0, 0}, Normal: Vector{0, 1}}
 	for i := 0; i < b.N; i++ {
@@ -83,5 +121,19 @@ func BenchmarkSegmentLine(b *testing.B) {
 	s := Segment{Point{0, 0}, Point{1, 0}}
 	for i := 0; i < b.N; i++ {
 		s.Line()
+	}
+}
+
+func BenchmarkRectangleMax(b *testing.B) {
+	r := Rectangle{Point{0, 0}, Vector{1, 1}}
+	for i := 0; i < b.N; i++ {
+		r.Max()
+	}
+}
+
+func BenchmarkRectangleCenter(b *testing.B) {
+	r := Rectangle{Point{0, 0}, Vector{1, 1}}
+	for i := 0; i < b.N; i++ {
+		r.Center()
 	}
 }
