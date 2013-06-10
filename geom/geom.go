@@ -23,7 +23,16 @@ const (
 // NearEqual returns true if the two floating point numbers are
 // close enough to be considered equal.
 func NearEqual(a, b float64) bool {
-	return math.Abs(a-b) < Threshold
+	diff := math.Abs(a - b)
+	if diff < Threshold {
+		return true
+	}
+	a, b = math.Abs(a), math.Abs(b)
+	big := a
+	if b > a {
+		big = b
+	}
+	return diff < big*Threshold
 }
 
 // A Point is a location in K-space.
