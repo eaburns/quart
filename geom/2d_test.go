@@ -24,7 +24,7 @@ func TestToImgCoords(t *testing.T) {
 		if x == test.x1 && y == test.y1 {
 			continue
 		}
-		t.Errorf("Expect %d,%d to transform to %d,%d, but got %d,%d\n",
+		t.Errorf("Expected %d,%d to transform to %d,%d, but got %d,%d\n",
 			test.x0, test.y0, test.x1, test.y1, x, y)
 	}
 }
@@ -45,7 +45,7 @@ func TestSegmentNormal(t *testing.T) {
 		if n.Equals(test.n) {
 			continue
 		}
-		t.Errorf("Expect normal of %v to %v to be %v, got %v", test.s0, test.s1, test.n, n)
+		t.Errorf("Expected normal of %v to %v to be %v, got %v", test.s0, test.s1, test.n, n)
 	}
 }
 
