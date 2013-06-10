@@ -55,7 +55,7 @@ func (l Line) Draw(cv Canvas, cl color.Color) {
 	var ends []Point
 	for _, s := range segs {
 		p, hit := l.LineIntersection(s)
-		if hit && onCanvas(p, cv) && (len(ends) == 0 || !p.Equals(ends[0])) {
+		if hit && onCanvas(p, cv) && (len(ends) == 0 || !p.NearlyEquals(ends[0])) {
 			ends = append(ends, p)
 		}
 	}

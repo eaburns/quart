@@ -47,7 +47,7 @@ func MoveEllipse(e Ellipse, v Vector, segs []Segment) (Ellipse, bool) {
 // otherwise it is false.  This value can be used to decide if it is "on the ground."
 func MoveCircle(c Circle, v Vector, segs []Segment) (Circle, bool) {
 	onGround := false
-	for !v.Equals(Vector{}) {
+	for !v.NearlyEquals(Vector{}) {
 		mv := moveCircle1(c, v, segs)
 		c.Center.Add(v.Unit().ScaledBy(mv.distance))
 		low := c.Center[1] - c.Radius*(1-bottomFactor*2)

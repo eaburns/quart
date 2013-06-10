@@ -20,9 +20,9 @@ const (
 	Threshold = 1.4901161193847656e-08
 )
 
-// Float64Equals returns true if the two floating point numbers are
+// NearEqual returns true if the two floating point numbers are
 // close enough to be considered equal.
-func Float64Equals(a, b float64) bool {
+func NearEqual(a, b float64) bool {
 	return math.Abs(a-b) < Threshold
 }
 
@@ -74,10 +74,10 @@ func (a Point) Distance(b Point) float64 {
 	return math.Sqrt(a.SquaredDistance(b))
 }
 
-// Equals returns true if the points are close enough to be considered equal.
-func (a Point) Equals(b Point) bool {
+// NearlyEquals returns true if the points are close enough to be considered equal.
+func (a Point) NearlyEquals(b Point) bool {
 	for i, ai := range a {
-		if !Float64Equals(ai, b[i]) {
+		if !NearEqual(ai, b[i]) {
 			return false
 		}
 	}
@@ -171,10 +171,10 @@ func (v Vector) Inverse() Vector {
 	return v
 }
 
-// Equals returns true if the vectors are close enough to be considered equal.
-func (a Vector) Equals(b Vector) bool {
+// NearlyEquals returns true if the vectors are close enough to be considered equal.
+func (a Vector) NearlyEquals(b Vector) bool {
 	for i, ai := range a {
-		if !Float64Equals(ai, b[i]) {
+		if !NearEqual(ai, b[i]) {
 			return false
 		}
 	}
@@ -202,7 +202,7 @@ func (r Ray) PlaneIntersection(p Plane) (float64, bool) {
 	d := -p.Normal.Dot(Vector(p.Origin))
 	numer := p.Normal.Dot(Vector(r.Origin)) + d
 	denom := r.Direction.Dot(p.Normal)
-	if Float64Equals(denom, 0) {
+	if NearEqual(denom, 0) {
 		return 0, false
 	}
 	return -numer / denom, true

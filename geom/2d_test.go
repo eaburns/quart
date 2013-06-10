@@ -42,7 +42,7 @@ func TestSegmentNormal(t *testing.T) {
 
 	for _, test := range tests {
 		n := Segment{test.s0, test.s1}.Normal()
-		if n.Equals(test.n) {
+		if n.NearlyEquals(test.n) {
 			continue
 		}
 		t.Errorf("Expected normal of %v to %v to be %v, got %v", test.s0, test.s1, test.n, n)
@@ -61,7 +61,7 @@ func TestRectangleMax(t *testing.T) {
 	for _, test := range tests {
 		r := Rectangle{test.min, test.size}
 		m := r.Max()
-		if m.Equals(test.max) {
+		if m.NearlyEquals(test.max) {
 			continue
 		}
 		t.Errorf("Expected max of %v to be %v, got %v", r, test.max, m)
@@ -80,7 +80,7 @@ func TestRectangleCenter(t *testing.T) {
 	for _, test := range tests {
 		r := Rectangle{test.min, test.size}
 		c := r.Center()
-		if c.Equals(test.center) {
+		if c.NearlyEquals(test.center) {
 			continue
 		}
 		t.Errorf("Expected center of %v to be %v, got %v", r, test.center, c)

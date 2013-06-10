@@ -23,7 +23,7 @@ func TestSquaredDistance(t *testing.T) {
 	}
 	for _, test := range tests {
 		s := test.a.SquaredDistance(test.b)
-		if Float64Equals(s, test.dist) {
+		if NearEqual(s, test.dist) {
 			continue
 		}
 		t.Errorf("Expected squared distance of %f between %v and %v, got %f",
@@ -43,7 +43,7 @@ func TestVectorDot(t *testing.T) {
 	}
 	for _, test := range tests {
 		d := test.a.Dot(test.b)
-		if Float64Equals(d, test.dot) {
+		if NearEqual(d, test.dot) {
 			continue
 		}
 		t.Errorf("Expected %v dot %v to be %f, got %f", test.a, test.b, test.dot, d)
@@ -53,7 +53,7 @@ func TestVectorDot(t *testing.T) {
 func TestVectorUnit(t *testing.T) {
 	t.Parallel()
 	err := quick.Check(func(v Vector) bool {
-		return Float64Equals(v.Unit().SquaredMagnitude(), 1.0)
+		return NearEqual(v.Unit().SquaredMagnitude(), 1.0)
 	}, nil)
 	if err != nil {
 		t.Error(err)
@@ -63,7 +63,7 @@ func TestVectorUnit(t *testing.T) {
 func TestVectorInverse(t *testing.T) {
 	t.Parallel()
 	err := quick.Check(func(v Vector) bool {
-		return v.Inverse().Plus(v).Equals(Vector{})
+		return v.Inverse().Plus(v).NearlyEquals(Vector{})
 	}, nil)
 	if err != nil {
 		t.Error(err)
@@ -98,7 +98,7 @@ func TestRayPlaneIntersectionHit(t *testing.T) {
 
 	for _, test := range tests {
 		d, _ := test.r.PlaneIntersection(test.p)
-		if Float64Equals(d, test.d) {
+		if NearEqual(d, test.d) {
 			continue
 		}
 		t.Errorf("Expected %v to hit %v at %g, got %g", test.r, test.p, test.d, d)
@@ -152,7 +152,7 @@ func TestRaySphereIntersectionHit(t *testing.T) {
 
 	for _, test := range tests {
 		d, _ := test.r.SphereIntersection(test.s)
-		if Float64Equals(d, test.d) {
+		if NearEqual(d, test.d) {
 			continue
 		}
 		t.Errorf("Expected %v to hit %v at %g, got %g", test.r, test.s, test.d, d)
@@ -189,7 +189,7 @@ func TestSegmentCenter(t *testing.T) {
 
 	for _, test := range tests {
 		c := Segment{test.s0, test.s1}.Center()
-		if c.Equals(test.c) {
+		if c.NearlyEquals(test.c) {
 			continue
 		}
 		t.Errorf("Expected %v to be center of %v to %v, got %v", test.c, test.s0, test.s1, c)
@@ -210,7 +210,7 @@ func TestSegmentNearestPoint(t *testing.T) {
 
 	for _, test := range tests {
 		n := Segment{test.s0, test.s1}.NearestPoint(test.p)
-		if n.Equals(test.n) {
+		if n.NearlyEquals(test.n) {
 			continue
 		}
 		t.Errorf("Expected nearest point to %v on %v to %v to be %v, got %v",
@@ -260,17 +260,17 @@ func BenchmarkPointDistance(b *testing.B) {
 	}
 }
 
-func BenchmarkPointEqualsDiff(b *testing.B) {
+func BenchmarkPointNearlyEqualsDiff(b *testing.B) {
 	p0, p1 := Point{1, 1}, Point{2, 2}
 	for i := 0; i < b.N; i++ {
-		p0.Equals(p1)
+		p0.NearlyEquals(p1)
 	}
 }
 
-func BenchmarkPointEqualsSame(b *testing.B) {
+func BenchmarkPointNearlyEqualsSame(b *testing.B) {
 	p := Point{1, 1}
 	for i := 0; i < b.N; i++ {
-		p.Equals(p)
+		p.NearlyEquals(p)
 	}
 }
 
@@ -351,17 +351,17 @@ func BenchmarkVectorInverse(b *testing.B) {
 	}
 }
 
-func BenchmarkVectorEqualsDiff(b *testing.B) {
+func BenchmarkVectorNearlyEqualssDiff(b *testing.B) {
 	v0, v1 := Vector{1, 1}, Vector{2, 2}
 	for i := 0; i < b.N; i++ {
-		v0.Equals(v1)
+		v0.NearlyEquals(v1)
 	}
 }
 
-func BenchmarkVectorEqualsSame(b *testing.B) {
+func BenchmarkVectorNearlyEqualsSame(b *testing.B) {
 	v := Vector{1, 1}
 	for i := 0; i < b.N; i++ {
-		v.Equals(v)
+		v.NearlyEquals(v)
 	}
 }
 
