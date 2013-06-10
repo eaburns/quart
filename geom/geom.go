@@ -35,6 +35,11 @@ func NearEqual(a, b float64) bool {
 	return diff < big*Threshold
 }
 
+// NearZero returns true if the value is close enough to zero to be considered zero.
+func NearZero(f float64) bool {
+	return math.Abs(f) < Threshold
+}
+
 // A Point is a location in K-space.
 type Point [K]float64
 
@@ -87,6 +92,17 @@ func (a Point) Distance(b Point) float64 {
 func (a Point) NearlyEquals(b Point) bool {
 	for i, ai := range a {
 		if !NearEqual(ai, b[i]) {
+			return false
+		}
+	}
+	return true
+}
+
+// NearZero returns true if the point is close enough to the zero point to be
+// considered the zero point.
+func (p Point) NearZero() bool {
+	for _, pi := range p {
+		if !NearZero(pi) {
 			return false
 		}
 	}
@@ -190,6 +206,17 @@ func (a Vector) NearlyEquals(b Vector) bool {
 	return true
 }
 
+// NearZero returns true if the vector is close enough to the zero vector to be
+// considered the zero vector.
+func (v Vector) NearZero() bool {
+	for _, vi := range v {
+		if !NearZero(vi) {
+			return false
+		}
+	}
+	return true
+}
+
 // A Plane represented by a point and its normal vector.
 type Plane struct {
 	Origin Point
@@ -211,7 +238,7 @@ func (r Ray) PlaneIntersection(p Plane) (float64, bool) {
 	d := -p.Normal.Dot(Vector(p.Origin))
 	numer := p.Normal.Dot(Vector(r.Origin)) + d
 	denom := r.Direction.Dot(p.Normal)
-	if NearEqual(denom, 0) {
+	if NearZero(denom) {
 		return 0, false
 	}
 	return -numer / denom, true

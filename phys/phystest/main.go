@@ -97,14 +97,14 @@ func mainLoop() {
 
 		case <-tick.C:
 			if !stopped {
-				if !onGround && NearEqual(move[1], 0) {
+				if !onGround && NearZero(move[1]) {
 					fall = math.Max(fall+gravity, terminalVelocity)
 				}
 				vel := move.Plus(Vector{0, fall})
 				start := body.Center
 				body, onGround = phys.MoveEllipse(body, vel, segs)
 				dist := start.Minus(body.Center).Magnitude()
-				stopped = move.NearlyEquals(Vector{}) && dist < stopFactor*math.Abs(fall)
+				stopped = move.NearZero() && dist < stopFactor*math.Abs(fall)
 				if onGround {
 					fall = gravity
 				}

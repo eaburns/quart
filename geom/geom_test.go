@@ -63,7 +63,7 @@ func TestVectorUnit(t *testing.T) {
 func TestVectorInverse(t *testing.T) {
 	t.Parallel()
 	err := quick.Check(func(v Vector) bool {
-		return v.Inverse().Plus(v).NearlyEquals(Vector{})
+		return v.Inverse().Plus(v).NearZero()
 	}, nil)
 	if err != nil {
 		t.Error(err)
@@ -274,6 +274,20 @@ func BenchmarkPointNearlyEqualsSame(b *testing.B) {
 	}
 }
 
+func BenchmarkPointNearZeroNonZero(b *testing.B) {
+	p := Point{1, 1}
+	for i := 0; i < b.N; i++ {
+		p.NearZero()
+	}
+}
+
+func BenchmarkPointNearZeroZero(b *testing.B) {
+	p := Point{0, 0}
+	for i := 0; i < b.N; i++ {
+		p.NearZero()
+	}
+}
+
 func BenchmarkVectorPlus(b *testing.B) {
 	v0, v1 := Vector{1, 1}, Vector{2, 2}
 	for i := 0; i < b.N; i++ {
@@ -362,6 +376,20 @@ func BenchmarkVectorNearlyEqualsSame(b *testing.B) {
 	v := Vector{1, 1}
 	for i := 0; i < b.N; i++ {
 		v.NearlyEquals(v)
+	}
+}
+
+func BenchmarkVectorNearZeroNonZero(b *testing.B) {
+	v := Vector{1, 1}
+	for i := 0; i < b.N; i++ {
+		v.NearZero()
+	}
+}
+
+func BenchmarkVectorNearZeroZero(b *testing.B) {
+	v := Vector{0, 0}
+	for i := 0; i < b.N; i++ {
+		v.NearZero()
 	}
 }
 
