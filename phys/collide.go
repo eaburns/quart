@@ -1,3 +1,5 @@
+// © 2012 the Quart Authors under the MIT license. See AUTHORS for the list of authors.
+
 package phys
 
 // Basically an implementation of: http://www.paulnettle.com/pub/FluidStudios/CollisionDetection/Fluid_Studios_Generic_Collision_Detection_for_Games_Using_Ellipsoids.pdf

@@ -1,3 +1,5 @@
+// © 2012 the Quart Authors under the MIT license. See AUTHORS for the list of authors.
+
 // Package geom provides geometric primitives for 2-dimensional Euclidean space.
 package geom
 
